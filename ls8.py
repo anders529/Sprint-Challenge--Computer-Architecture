@@ -5,5 +5,5 @@ from cpu import *
 import re
 
 cpu = CPU()
-cpu.load()
+cpu.load(sys.argv[1])
 cpu.run()
