@@ -8,6 +8,14 @@ PRN = 0b01000111
 MUL = 0b10100010
 PUSH = 0b01000101
 POP = 0b01000110
+CALL = 0b01010000
+RET = 0b00010001
+ADD = 0b10100000
+CMP = 0b10100111
+JMP = 0b01010100
+JEQ = 0b01010101
+JNE = 0b01010110
+
 
 class CPU:
     """Main CPU class."""
@@ -17,6 +25,7 @@ class CPU:
         self.ram = [0b00000000] * 256
         self.reg = [0b00000000] * 8
         self.reg[7] = 0xF4
+        self.fl = 0b00000000
         self.pc = 0
 
     def load(self, filename):
@@ -34,10 +43,10 @@ class CPU:
                         address += 1
                     else:
                         continue
-                    
+
         except FileNotFoundError:
-                        print(f'Error from {sys.argv[0]}: {sys.argv[1]} not found')
-                        print("(Did you double check the file name?)")
+            print(f'Error from {sys.argv[0]}: {sys.argv[1]} not found')
+            print("(Did you double check the file name?)")
         # For now, we've just hardcoded a program:
 
         # program = [
@@ -54,12 +63,27 @@ class CPU:
         #     self.ram[address] = instruction
         #     address += 1
 
-
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
 
         if op == MUL:
             self.reg[reg_a] *= self.reg[reg_b]
+            self.pc += 3
+        elif:
+            op == ADD:
+            self.reg[reg_a] += self.reg[reg_b]
+            self.pc += 3
+        elif:
+            op == CMP:
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.fl = 0b00000001
+
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.fl = 0b00000100
+
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.fl = 0b00000010
+
             self.pc += 3
         else:
             raise Exception("Unsupported ALU operation")
@@ -72,8 +96,8 @@ class CPU:
 
         print(f"TRACE: %02X | %02X %02X %02X |" % (
             self.pc,
-            #self.fl,
-            #self.ie,
+            # self.fl,
+            # self.ie,
             self.ram_read(self.pc),
             self.ram_read(self.pc + 1),
             self.ram_read(self.pc + 2)
