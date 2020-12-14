@@ -105,7 +105,6 @@ class CPU:
 
         for i in range(8):
             print(" %02X" % self.reg[i], end='')
-
         print()
 
     def run(self):
@@ -144,6 +143,32 @@ class CPU:
                 operand = self.ram_read(self.pc + 1)
                 self.push(operand)
                 self.pc += 2
+
+            elif instruction == CALL:
+                self.sub_sp()
+                next_instruction_address = self.pc + 2
+                self.ram = [self.get_sp()] = next_instruction_address
+                operand_a = self.ram_read(self.pc + 1)
+                self.pc = self.reg[operand_a]
+
+            elif instruction == ADD:
+                operand_a = self.ram_read(self.pc + 1)
+                operand_b = self.ram_read(self.pc + 1)
+                self.alu = (instruction, operand_a, operand_b)
+
+            elif instruction == JNE:
+                operand_a = self.ram_read(self.pc + 1)
+                if (self.has_e_flag() == False):
+                    self.pc = self.reg[operand_a]
+                else:
+                    self.pc += 2
+
+            elif instruction == JMP:
+                operand_a = self.ram_read(self.pc + 1)
+                self.pc = self.reg[operand_a]
+
+            elif instruction == RET:
+                self.pc = self.pop()
 
     def ram_read(self, address):
         return self.ram[address]
